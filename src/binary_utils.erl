@@ -1,4 +1,4 @@
--module(test).
+-module(binary_utils).
 
 -export([test/0]).
 
