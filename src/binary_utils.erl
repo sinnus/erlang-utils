@@ -1,13 +1,7 @@
 -module(binary_utils).
 
--export([test/0]).
-
-test() ->
-    Rest = process_message(<<1,2,3,0,4,5,0,3,1,2,3,0,0,32>>,
-			  fun(Message) ->
-				  io:format("Message: ~p~n", [Message])
-			  end),
-    io:format("Rest: ~p~n", [Rest]).
+-export([process_message/2,
+	 decode_string/2]).
 
 process_message(Bin, Callback) ->
     {Bin1, Rest} = decode_string(Bin),
