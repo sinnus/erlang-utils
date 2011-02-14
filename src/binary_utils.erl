@@ -1,7 +1,7 @@
 -module(binary_utils).
 
 -export([process_message/2,
-	 decode_string/2]).
+	 decode_string/1]).
 
 process_message(Bin, Callback) ->
     {Bin1, Rest} = decode_string(Bin),
@@ -16,13 +16,19 @@ process_message(Bin, Rest, Callback) ->
     process_message(Bin1, Rest1, Callback).
 
 decode_string(Bin) ->
-    decode_string(Bin, <<>>).
+    decode_string(Bin, <<>>, false).
 
-decode_string(<<0, Rest/binary>>, Acc) ->
-    {Acc, Rest};
+decode_string(<<0, Rest/binary>>, Acc, _WasZero) ->
+    decode_string(Rest, Acc, true);
 
-decode_string(<<>>, Acc) ->
+decode_string(<<>>, Acc, true) ->
+    {Acc, <<>>};
+
+decode_string(<<>>, Acc, false) ->
     {<<>>, Acc};
 
-decode_string(<<C, Rest/binary>>, Acc) ->
-    decode_string(Rest, <<Acc/binary, C>>).
+decode_string(Rest, Acc, true) ->
+    {Acc, Rest};
+
+decode_string(<<C, Rest/binary>>, Acc, false) ->
+    decode_string(Rest, <<Acc/binary, C>>, false).
